@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from '../layout/Sidebar/Sidebar';
 import '../layout/Dashboard.css'
 import { DataGrid } from '@mui/x-data-grid';
 import "../components/ContentMain/ContentMain.css";
-import teacherData from '../utils/dashboard_data.json';
 import ContentTop from "../components/ContentTop/ContentTop";
 import "../layout/Content/Content.css";
+import { getAllTeachersAPI, createTeacherAPI, deleteTeacherAPI } from '../utils/api'
 
 const AllTeachers = () => {
     const [newTeacherName, setNewTeacherName] = useState('');
@@ -13,20 +13,28 @@ const AllTeachers = () => {
     const [newTeacherActivityScore, setNewTeacherActivityScore] = useState('');
     const [newTeacherInteractionRating, setNewTeacherInteractionRating] = useState('');
     const [newTeacherSubjectsTaught, setNewTeacherSubjectsTaught] = useState('');
+    const [teachers, setTeachers] = useState([]);
+    const [rows, setRows] = useState([]);
 
-    const all_teachers = teacherData.teacher_activities;
-    const [rows, setRows] = useState(all_teachers.map((teacher, index) => ({
-        id: index,
-        teacher_id: teacher.teacher_id,
-        name: teacher.name,
-        last_active: teacher.last_active,
-        activity_score: teacher.activity_score,
-        student_interaction_rating: teacher.student_interaction_rating,
-        subjects_taught: teacher.subjects_taught.join(', '),
-    })));
+    useEffect(() => {
+        getAllTeachersAPI()
+            .then((response) => {
+                setTeachers(response.data);
+                setRows(teachers.map((teacher) => ({
+                    id: teacher._id,
+                    name: teacher.name,
+                    last_active: teacher.last_active,
+                    activity_score: teacher.activity_score,
+                    student_interaction_rating: teacher.student_interaction_rating,
+                    subjects_taught: teacher.subjects_taught.join(', '),
+                })));
+            })
+            .catch((error) => {
+                console.error('There was an error fetching the teachers!', error);
+            });
+    }, [teachers]);
 
     const columns = [
-        { field: 'teacher_id', headerName: 'Teacher ID', width: 150 },
         { field: 'name', headerName: 'Name', width: 150 },
         { field: 'last_active', headerName: 'Last Active', width: 150 },
         { field: 'activity_score', headerName: 'Activity Score', width: 150 },
@@ -44,25 +52,38 @@ const AllTeachers = () => {
 
     const handleAddNewTeacher = () => {
         const newTeacher = {
-            id: rows.length + 1,
-            teacher_id: rows.length + 1,
             name: newTeacherName,
             last_active: newTeacherLastActive,
             activity_score: newTeacherActivityScore,
             student_interaction_rating: newTeacherInteractionRating,
-            subjects_taught: newTeacherSubjectsTaught,
+            subjects_taught: newTeacherSubjectsTaught.split(', ')
         };
-        setRows([...rows, newTeacher]);
-        setNewTeacherName('');
-        setNewTeacherLastActive('');
-        setNewTeacherActivityScore('');
-        setNewTeacherInteractionRating('');
-        setNewTeacherSubjectsTaught('');
+
+        createTeacherAPI(newTeacher)
+            .then((response) => {
+                setRows([...rows, { id: response.data._id, ...response.data }]);
+                setNewTeacherName('');
+                setNewTeacherLastActive('');
+                setNewTeacherActivityScore('');
+                setNewTeacherInteractionRating('');
+                setNewTeacherSubjectsTaught('');
+            })
+            .catch((error) => {
+                console.error('There was an error adding the teacher!', error);
+            });
     };
 
+
     const removeTeacher = (id) => {
-        setRows(rows.filter(row => row.id !== id));
+        deleteTeacherAPI(id)
+            .then(() => {
+                setRows(rows.filter(row => row.id !== id));
+            })
+            .catch((error) => {
+                console.error('There was an error deleting the teacher!', error);
+            });
     };
+
 
     return (
         <div className='app'>

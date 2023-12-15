@@ -1,32 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from '../layout/Sidebar/Sidebar';
 import '../layout/Dashboard.css'
 import { DataGrid } from '@mui/x-data-grid';
 import "../components/ContentMain/ContentMain.css";
-import teacherData from '../utils/dashboard_data.json';
 import ContentTop from "../components/ContentTop/ContentTop";
 import "../layout/Content/Content.css";
-
+import { getAllCoachesAPI, createCoachesByIdAPI, deleteCoachesByIdAPI } from '../utils/api'
 
 
 const AllCoach = () => {
     const [newCoachName, setNewCoachName] = useState('');
     const [newCoachSpecialization, setNewCoachSpecialization] = useState('');
     const [newCoachYears, setNewCoachYears] = useState('');
+    const [rows, setRows] = useState([])
+    const [coaches, setCoaches] = useState([])
 
+    useEffect(() => {
+        getAllCoachesAPI().then((allCoaches) => {
+            setCoaches(allCoaches.data)
+            setRows(coaches.map((coach) => ({
+                id: coach._id,
+                name: coach.name,
+                specialization: coach.specialization,
+                years_of_experience: coach.years_of_experience,
+            })));
+        }).catch((error) => {
+            console.error('There was an error fetching the coaches!', error);
+        });
+    }, [coaches])
 
-    const all_coaches = teacherData.coach_details
-    const [rows, setRows] = useState(all_coaches.map((coach, index) => ({
-        id: index,
-        coach_id: coach.coach_id,
-        name: coach.name,
-        specialization: coach.specialization,
-        years_of_experience: coach.years_of_experience,
-    })));
 
 
     const columns = [
-        { field: 'coach_id', headerName: 'Coach ID', width: 150 },
         { field: 'name', headerName: 'Name', width: 150 },
         { field: 'specialization', headerName: 'Specialization', width: 200 },
         { field: 'years_of_experience', headerName: 'Years of Experience', width: 200 },
@@ -42,21 +47,34 @@ const AllCoach = () => {
 
     const handleAddNewCoach = () => {
         const newCoach = {
-            id: rows.length + 1,
-            coach_id: rows.length + 1,
             name: newCoachName,
             specialization: newCoachSpecialization,
             years_of_experience: newCoachYears,
         };
-        setRows([...rows, newCoach]);
-        setNewCoachName('');
-        setNewCoachSpecialization('');
-        setNewCoachYears('');
+
+        createCoachesByIdAPI(newCoach)
+            .then((response) => {
+                setRows([...rows, { id: response.data._id, ...response.data }]);
+                setNewCoachName('');
+                setNewCoachSpecialization('');
+                setNewCoachYears('');
+            })
+            .catch((error) => {
+                console.error('There was an error adding the coach!', error);
+            });
     };
 
+
     const removeCoach = (id) => {
-        setRows(rows.filter(row => row.id !== id));
+        deleteCoachesByIdAPI(id)
+            .then(() => {
+                setRows(rows.filter(row => row.id !== id));
+            })
+            .catch((error) => {
+                console.error('There was an error deleting the coach!', error);
+            });
     };
+
 
 
     return (

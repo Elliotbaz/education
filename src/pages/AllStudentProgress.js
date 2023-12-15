@@ -1,52 +1,86 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from '../layout/Sidebar/Sidebar';
 import '../layout/Dashboard.css';
 import { DataGrid } from '@mui/x-data-grid';
 import "../components/ContentMain/ContentMain.css";
-import teacherData from '../utils/dashboard_data.json';
 import ContentTop from "../components/ContentTop/ContentTop";
 import "../layout/Content/Content.css";
+import { getAllStudentProgressAPI, createStudentProgressAPI, deleteStudentProgressAPI } from '../utils/api'
 
 const AllStudentProgress = () => {
-    // State hooks for new student progress form fields
     const [newSubject, setNewSubject] = useState('');
+    const [studentProgress, setStudentProgress] = useState([]);
     const [newAverageScoreImprovement, setNewAverageScoreImprovement] = useState('');
     const [newHomeworkCompletionRate, setNewHomeworkCompletionRate] = useState('');
     const [newAttendanceRate, setNewAttendanceRate] = useState('');
+    const [rows, setRows] = useState([]);
 
-    const all_student_progress = teacherData.student_progress;
-    const [rows, setRows] = useState(all_student_progress.map((progress, index) => ({
-        id: index,
-        class_id: progress.class_id,
-        subject: progress.subject,
-        average_score_improvement: progress.average_score_improvement,
-        homework_completion_rate: progress.homework_completion_rate,
-        attendance_rate: progress.attendance_rate,
-    })));
+    useEffect(() => {
+        getAllStudentProgressAPI()
+            .then((response) => {
+                setStudentProgress(response.data);
+                setRows(studentProgress.map((progress) => ({
+                    id: progress._id,
+                    subject: progress.subject,
+                    average_score_improvement: progress.average_score_improvement,
+                    homework_completion_rate: progress.homework_completion_rate,
+                    attendance_rate: progress.attendance_rate,
+                })));
+            })
+            .catch((error) => {
+                console.error('There was an error fetching the student progress!', error);
+            });
+    }, [studentProgress]);
+
 
     const columns = [
-        { field: 'class_id', headerName: 'Class ID', width: 150 },
         { field: 'subject', headerName: 'Subject', width: 200 },
         { field: 'average_score_improvement', headerName: 'Average Score Improvement', width: 250 },
         { field: 'homework_completion_rate', headerName: 'Homework Completion Rate', width: 250 },
         { field: 'attendance_rate', headerName: 'Attendance Rate', width: 200 },
+        {
+            field: 'actions',
+            headerName: 'Actions',
+            width: 150,
+            renderCell: (params) => (
+                <button onClick={() => handlerRemoveResource(params.id)} style={{ color: '#fff', backgroundColor: 'var(--clr-pumpkin)', padding: '5px 10px', borderRadius: '10px' }}>Delete</button>
+            ),
+        }
     ];
+
+    const handlerRemoveResource = (id) => {
+        deleteStudentProgressAPI(id)
+            .then(() => {
+                setRows(rows.filter(row => row.id !== id));
+            })
+            .catch((error) => {
+                console.error('There was an error deleting the student progress!', error);
+            });
+    };
 
     const handleAddNewProgress = () => {
         const newProgress = {
-            id: rows.length + 1,
-            class_id: rows.length + 1,
             subject: newSubject,
             average_score_improvement: newAverageScoreImprovement,
             homework_completion_rate: newHomeworkCompletionRate,
             attendance_rate: newAttendanceRate,
         };
-        setRows([...rows, newProgress]);
-        setNewSubject('');
-        setNewAverageScoreImprovement('');
-        setNewHomeworkCompletionRate('');
-        setNewAttendanceRate('');
+
+        createStudentProgressAPI(newProgress)
+            .then((response) => {
+                // Update rows with the new data including the ID from the response
+                setRows([...rows, { id: response.data._id, ...response.data }]);
+                // Reset form fields
+                setNewSubject('');
+                setNewAverageScoreImprovement('');
+                setNewHomeworkCompletionRate('');
+                setNewAttendanceRate('');
+            })
+            .catch((error) => {
+                console.error('There was an error adding the student progress!', error);
+            });
     };
+
 
     return (
         <div className='app'>

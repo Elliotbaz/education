@@ -1,25 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from '../layout/Sidebar/Sidebar';
 import '../layout/Dashboard.css';
 import { DataGrid } from '@mui/x-data-grid';
 import "../components/ContentMain/ContentMain.css";
-import teacherData from '../utils/dashboard_data.json';
 import ContentTop from "../components/ContentTop/ContentTop";
 import "../layout/Content/Content.css";
+import { getAllResourcesAPI, createResourcesAPI, deleteResourcesAPI } from '../utils/api'
 
 const AllResources = () => {
     const [newResourceName, setNewResourceName] = useState('');
     const [newUtilizationRate, setNewUtilizationRate] = useState('');
     const [newAllocatedTeachers, setNewAllocatedTeachers] = useState('');
+    const [resources, setResources] = useState([]);
+    const [rows, setRows] = useState([])
 
-    const all_resources = teacherData.resource_management;
-    const [rows, setRows] = useState(all_resources.map((resource, index) => ({
-        id: index,
-        resource_id: resource.resource_id,
-        resource_name: resource.resource_name,
-        allocated_teachers: resource.allocated_teachers.join(', '),
-        utilization_rate: resource.utilization_rate,
-    })));
+    useEffect(() => {
+        getAllResourcesAPI()
+            .then((response) => {
+                setResources(response.data);
+                setRows(resources.map((resource) => ({
+                    id: resource._id,
+                    resource_name: resource.resource_name,
+                    allocated_teachers: resource.allocated_teachers.join(', '),
+                    utilization_rate: resource.utilization_rate,
+                })));
+
+            })
+            .catch((error) => {
+                console.error('There was an error fetching the student progress!', error);
+            });
+    }, [resources]);
 
     const columns = [
         { field: 'resource_id', headerName: 'Resource ID', width: 150 },
