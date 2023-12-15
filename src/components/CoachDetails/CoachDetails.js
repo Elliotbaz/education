@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import "./CoachDetails.css";
 
 const CoachDetails = ({ coach_details }) => {
-    const sortedADetails = [...coach_details].sort((a, b) => a.years_of_experience - b.years_of_experience);
-
+    const sortedADetails = coach_details.sort((a, b) => a.years_of_experience - b.years_of_experience);
     return (
         <div className="grid-one-item grid-common grid-c1">
             <div className="grid-c-title">
@@ -15,7 +14,7 @@ const CoachDetails = ({ coach_details }) => {
                 <div className="grid-items">
                     {
                         sortedADetails.slice(0, 3).map((activity) => (
-                            <div key={activity.coach_id} className="grid-item">
+                            <div key={activity._id} className="grid-item">
                                 <div className="grid-item-l">
                                     <p className="text">{activity.name} <span>{activity.specialization}</span></p>
                                 </div>

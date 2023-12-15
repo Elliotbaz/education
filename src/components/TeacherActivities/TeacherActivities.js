@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import "./TeacherActivities.css";
 
 const TeacherActivities = ({ teacherActivities }) => {
-    const sortedActivities = [...teacherActivities].sort((a, b) => new Date(b.last_active) - new Date(a.last_active));
+    const sortedActivities = teacherActivities.sort((a, b) => new Date(b.last_active) - new Date(a.last_active));
 
     return (
         <div className="grid-one-item grid-common grid-c2">
@@ -15,10 +15,10 @@ const TeacherActivities = ({ teacherActivities }) => {
                 <div className="grid-items">
                     {
                         sortedActivities.slice(0, 3).map((activity) => (
-                            <div key={activity.teacher_id} className="grid-item">
+                            <div key={activity._id} className="grid-item">
                                 <div className="grid-item-l">
                                     <p className="text">{activity.name}
-                                        <span><b>Last Active:</b> {activity.last_active}</span>
+                                        <span><b>Last Active:</b> {new Date(activity.last_active).toLocaleDateString()}</span>
                                         <span> <b>Subjects:</b> {activity.subjects_taught.join(', ')}</span>
                                     </p>
                                 </div>

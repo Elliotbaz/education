@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import "./ContentMain.css";
 import CoachDetails from "../CoachDetails/CoachDetails";
 import TeacherActivities from "../TeacherActivities/TeacherActivities";
@@ -6,31 +7,58 @@ import CoachTeacherInteractions from "../CoachTeacherInteractions/CoachTeacherIn
 import StudentProgress from "../StudentProgress/StudentProgress";
 import TotalResourceCount from "../TotalResourceCount/TotalResourceCount";
 import HelpDesk from "../HelpDesk/HelpDesk";
-// Import your teacher activities data replicating the API
-import teacherData from '../../utils/dashboard_data.json';
+import { getAllCoachesAPI, getAllResourcesAPI, getAllTeachersAPI, getAllStudentProgressAPI, getAllInteractionsAPI } from '../../utils/api'
 
 const ContentMain = () => {
+  const [coaches, setCoaches] = useState([])
+  const [teachers, setTeachers] = useState([])
+  const [resources, setResources] = useState([])
+  const [studentsProgress, setStudentsProgress] = useState([])
+  const [interactions, setInteractions] = useState([])
+
+  useEffect(() => {
+    getAllCoachesAPI().then(response => {
+      setCoaches(response.data)
+    })
+
+    getAllTeachersAPI().then((response) => {
+      setTeachers(response.data)
+    })
+
+    getAllResourcesAPI().then((response) => {
+      setResources(response.data)
+    })
+
+    getAllStudentProgressAPI().then((response) => {
+      setStudentsProgress(response.data)
+    })
+
+    getAllInteractionsAPI().then((response) => {
+      setInteractions(response.data)
+    })
+  }, [])
+
   return (
     <div className="main-content-holder">
       <div className="content-grid-one">
-        <CoachDetails coach_details={teacherData.coach_details} />
-        <TeacherActivities teacherActivities={teacherData.teacher_activities} />
-        <Resource resourceManagement={teacherData.resource_management} />
+        <CoachDetails coach_details={coaches} />
+        <TeacherActivities teacherActivities={teachers} />
+        <Resource resourceManagement={resources} />
       </div>
       <div className="content-grid-two">
-        <CoachTeacherInteractions coachTeacherInteractions={teacherData.coach_teacher_interactions} />
+        <CoachTeacherInteractions coachTeacherInteractions={interactions} />
         <div className="grid-two-item">
           <div className="subgrid-two">
-            <StudentProgress studentProgress={teacherData.student_progress} />
+            <StudentProgress studentProgress={studentsProgress} />
           </div>
         </div>
 
         <div className="grid-two-item">
           <div className="subgrid-two">
             <TotalResourceCount
-              teacherActivities={teacherData.teacher_activities}
-              coachDetails={teacherData.coach_details}
-              resourceManagement={teacherData.resource_management} />
+              teacherActivities={teachers}
+              coachDetails={coaches}
+              resourceManagement={resources} />
             <HelpDesk />
           </div>
         </div>

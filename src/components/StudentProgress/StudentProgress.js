@@ -16,7 +16,7 @@ const StudentProgress = ({ studentProgress }) => {
                 <div className="grid-items">
                     {
                         studentProgress.slice(0, 12).map((progress) => (
-                            <div className="grid-item" key={progress.id} style={{ marginTop: 10 }}>
+                            <div className="grid-item" key={progress._id} style={{ marginTop: 10 }}>
                                 <div className="grid-item-l">
 
                                     <p className="text text-silver-v1">{progress.subject} (<span><b>Done Homework:</b>  {progress.homework_completion_rate}%</span>)</p>
