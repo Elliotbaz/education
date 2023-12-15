@@ -64,7 +64,6 @@ const AllResources = () => {
 
         createResourcesAPI(newResource)
             .then(() => {
-                // Fetch all resources again to update the table with correct data
                 getAllResourcesAPI()
                     .then((response) => {
                         setRows(response.data.map(resource => ({
@@ -81,8 +80,6 @@ const AllResources = () => {
             .catch((error) => {
                 console.error('Error adding new resource', error);
             });
-
-        // Reset input fields
         setNewResourceName('');
         setNewUtilizationRate('');
         setNewAllocatedTeachers([]);

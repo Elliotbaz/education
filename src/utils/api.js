@@ -33,6 +33,6 @@ export const deleteCoachesByIdAPI = (id) => axios.delete(`${API_URL}/coaches/${i
 // Coach-Teacher Interactions
 export const getAllInteractionsAPI = () => axios.get(`${API_URL}/interactions`);
 export const getAllInteractionsByIdAPI = (id) => axios.get(`${API_URL}/interactions/${id}`);
-export const updateInteractionsAPI = (id, data) => axios.get(`${API_URL}/interactions/${id}`, data);
-export const createInteractionsAPI = (data) => axios.get(`${API_URL}/interactions`, data);
-export const deleteInteractionsAPI = (id) => axios.get(`${API_URL}/interactions/${id}`);
+export const updateInteractionsAPI = (id, data) => axios.put(`${API_URL}/interactions/${id}`, data);
+export const createInteractionsAPI = (data) => axios.post(`${API_URL}/interactions`, data);
+export const deleteInteractionsAPI = (id) => axios.delete(`${API_URL}/interactions/${id}`);
