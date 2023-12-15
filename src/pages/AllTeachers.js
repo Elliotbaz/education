@@ -13,26 +13,24 @@ const AllTeachers = () => {
     const [newTeacherActivityScore, setNewTeacherActivityScore] = useState('');
     const [newTeacherInteractionRating, setNewTeacherInteractionRating] = useState('');
     const [newTeacherSubjectsTaught, setNewTeacherSubjectsTaught] = useState('');
-    const [teachers, setTeachers] = useState([]);
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
         getAllTeachersAPI()
             .then((response) => {
-                setTeachers(response.data);
-                setRows(teachers.map((teacher) => ({
+                setRows(response.data.map((teacher => ({
                     id: teacher._id,
                     name: teacher.name,
                     last_active: teacher.last_active,
                     activity_score: teacher.activity_score,
                     student_interaction_rating: teacher.student_interaction_rating,
                     subjects_taught: teacher.subjects_taught.join(', '),
-                })));
+                }))))
             })
             .catch((error) => {
                 console.error('There was an error fetching the teachers!', error);
             });
-    }, [teachers]);
+    }, []);
 
     const columns = [
         { field: 'name', headerName: 'Name', width: 150 },

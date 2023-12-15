@@ -9,7 +9,6 @@ import { getAllStudentProgressAPI, createStudentProgressAPI, deleteStudentProgre
 
 const AllStudentProgress = () => {
     const [newSubject, setNewSubject] = useState('');
-    const [studentProgress, setStudentProgress] = useState([]);
     const [newAverageScoreImprovement, setNewAverageScoreImprovement] = useState('');
     const [newHomeworkCompletionRate, setNewHomeworkCompletionRate] = useState('');
     const [newAttendanceRate, setNewAttendanceRate] = useState('');
@@ -18,8 +17,8 @@ const AllStudentProgress = () => {
     useEffect(() => {
         getAllStudentProgressAPI()
             .then((response) => {
-                setStudentProgress(response.data);
-                setRows(studentProgress.map((progress) => ({
+
+                setRows(response.data.map((progress) => ({
                     id: progress._id,
                     subject: progress.subject,
                     average_score_improvement: progress.average_score_improvement,
@@ -30,7 +29,7 @@ const AllStudentProgress = () => {
             .catch((error) => {
                 console.error('There was an error fetching the student progress!', error);
             });
-    }, [studentProgress]);
+    }, []);
 
 
     const columns = [

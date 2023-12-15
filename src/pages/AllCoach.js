@@ -13,21 +13,19 @@ const AllCoach = () => {
     const [newCoachSpecialization, setNewCoachSpecialization] = useState('');
     const [newCoachYears, setNewCoachYears] = useState('');
     const [rows, setRows] = useState([])
-    const [coaches, setCoaches] = useState([])
 
     useEffect(() => {
-        getAllCoachesAPI().then((allCoaches) => {
-            setCoaches(allCoaches.data)
-            setRows(coaches.map((coach) => ({
+        getAllCoachesAPI().then((response) => {
+            setRows(response.data.map((coach => ({
                 id: coach._id,
                 name: coach.name,
                 specialization: coach.specialization,
                 years_of_experience: coach.years_of_experience,
-            })));
+            }))));
         }).catch((error) => {
             console.error('There was an error fetching the coaches!', error);
         });
-    }, [coaches])
+    }, [])
 
 
 

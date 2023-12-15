@@ -11,28 +11,24 @@ const AllResources = () => {
     const [newResourceName, setNewResourceName] = useState('');
     const [newUtilizationRate, setNewUtilizationRate] = useState('');
     const [newAllocatedTeachers, setNewAllocatedTeachers] = useState('');
-    const [resources, setResources] = useState([]);
     const [rows, setRows] = useState([])
 
     useEffect(() => {
         getAllResourcesAPI()
             .then((response) => {
-                setResources(response.data);
-                setRows(resources.map((resource) => ({
+                setRows(response.data.map((resource) => ({
                     id: resource._id,
                     resource_name: resource.resource_name,
-                    allocated_teachers: resource.allocated_teachers.join(', '),
+                    allocated_teachers: resource.allocated_teachers.map(teacher => teacher.name).join(', '),
                     utilization_rate: resource.utilization_rate,
                 })));
-
             })
             .catch((error) => {
-                console.error('There was an error fetching the student progress!', error);
+                console.error('There was an error fetching the resources!', error);
             });
-    }, [resources]);
+    }, []);
 
     const columns = [
-        { field: 'resource_id', headerName: 'Resource ID', width: 150 },
         { field: 'resource_name', headerName: 'Resource Name', width: 200 },
         { field: 'allocated_teachers', headerName: 'Allocated Teachers', width: 200 },
         { field: 'utilization_rate', headerName: 'Utilization Rate (%)', width: 180 },
