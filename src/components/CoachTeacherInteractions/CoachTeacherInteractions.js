@@ -1,5 +1,5 @@
 import React from 'react';
-import "./CoachTeacherInteractions.css"; // Rename your CSS file accordingly
+import "./CoachTeacherInteractions.css";
 import { Link } from 'react-router-dom';
 
 const CoachTeacherInteractions = ({ coachTeacherInteractions }) => {

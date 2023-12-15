@@ -81,7 +81,6 @@ const AllInteractions = () => {
 
         createInteractionsAPI(newInteraction)
             .then(() => {
-                // Refetch interactions to update the table
                 getAllInteractionsAPI().then(response => {
                     setRows(response.data.map((interaction) => ({
                         id: interaction._id,
@@ -96,7 +95,6 @@ const AllInteractions = () => {
             })
             .catch(error => console.error('Error adding new interaction:', error));
 
-        // Reset form fields
         setSelectedCoach(null);
         setSelectedTeacher(null);
         setNewInteractionDate('');

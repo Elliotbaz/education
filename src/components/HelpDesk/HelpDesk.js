@@ -1,5 +1,5 @@
 import React from 'react';
-import "./HelpDesk.css"; // Make sure you have a corresponding CSS file for styling
+import "./HelpDesk.css";
 
 const HelpDesk = () => {
     return (

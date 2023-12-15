@@ -67,9 +67,7 @@ const AllStudentProgress = () => {
 
         createStudentProgressAPI(newProgress)
             .then((response) => {
-                // Update rows with the new data including the ID from the response
                 setRows([...rows, { id: response.data._id, ...response.data }]);
-                // Reset form fields
                 setNewSubject('');
                 setNewAverageScoreImprovement('');
                 setNewHomeworkCompletionRate('');
