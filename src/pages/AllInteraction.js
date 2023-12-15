@@ -8,13 +8,11 @@ import ContentTop from "../components/ContentTop/ContentTop";
 import "../layout/Content/Content.css";
 
 const AllInteractions = () => {
-    // States for new interaction form fields
     const [newInteractionCoachId, setNewInteractionCoachId] = useState('');
     const [newInteractionTeacherId, setNewInteractionTeacherId] = useState('');
     const [newInteractionDate, setNewInteractionDate] = useState('');
     const [newInteractionNotes, setNewInteractionNotes] = useState('');
 
-    // Map the interaction data to rows
     const all_interactions = teacherData.coach_teacher_interactions;
     const [rows, setRows] = useState(all_interactions.map((interaction, index) => ({
         id: index,
@@ -24,7 +22,6 @@ const AllInteractions = () => {
         meeting_notes: interaction.meeting_notes,
     })));
 
-    // Define columns for DataGrid
     const columns = [
         { field: 'coach_id', headerName: 'Coach ID', width: 150 },
         { field: 'teacher_id', headerName: 'Teacher ID', width: 150 },
@@ -44,7 +41,6 @@ const AllInteractions = () => {
                     {params.value}
                 </div>
             ),
-            // Removing the sortable property as it's not relevant to rendering
         },
         {
             field: 'actions',
@@ -56,7 +52,6 @@ const AllInteractions = () => {
         }
     ];
 
-    // Handler to add a new interaction
     const handleAddNewInteraction = () => {
         const newInteraction = {
             id: rows.length + 1,
@@ -73,7 +68,6 @@ const AllInteractions = () => {
         setNewInteractionNotes('');
     };
 
-    // Handler to remove an interaction
     const removeInteraction = (id) => {
         setRows(rows.filter(row => row.id !== id));
     };
@@ -87,7 +81,6 @@ const AllInteractions = () => {
                     <div className="content-grid-one">
                         <div className="grid-one-item grid-common grid-c1" style={{ backgroundColor: '#fff' }}>
                             <div >
-                                {/* Input fields for adding a new interaction */}
                                 <input
                                     type="text"
                                     value={newInteractionCoachId}

@@ -30,27 +30,23 @@ const AllStudentProgress = () => {
         { field: 'average_score_improvement', headerName: 'Average Score Improvement', width: 250 },
         { field: 'homework_completion_rate', headerName: 'Homework Completion Rate', width: 250 },
         { field: 'attendance_rate', headerName: 'Attendance Rate', width: 200 },
-        // Include actions such as delete if necessary
     ];
 
     const handleAddNewProgress = () => {
         const newProgress = {
             id: rows.length + 1,
-            class_id: rows.length + 1, // Generate a unique ID for the new class progress
+            class_id: rows.length + 1,
             subject: newSubject,
             average_score_improvement: newAverageScoreImprovement,
             homework_completion_rate: newHomeworkCompletionRate,
             attendance_rate: newAttendanceRate,
         };
         setRows([...rows, newProgress]);
-        // Reset form fields
         setNewSubject('');
         setNewAverageScoreImprovement('');
         setNewHomeworkCompletionRate('');
         setNewAttendanceRate('');
     };
-
-    // Function to remove a progress record can be similar to removeResource
 
     return (
         <div className='app'>

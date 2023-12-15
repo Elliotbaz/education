@@ -45,7 +45,7 @@ const AllTeachers = () => {
     const handleAddNewTeacher = () => {
         const newTeacher = {
             id: rows.length + 1,
-            teacher_id: rows.length + 1, // You might want a better way to generate unique IDs
+            teacher_id: rows.length + 1,
             name: newTeacherName,
             last_active: newTeacherLastActive,
             activity_score: newTeacherActivityScore,
@@ -53,7 +53,6 @@ const AllTeachers = () => {
             subjects_taught: newTeacherSubjectsTaught,
         };
         setRows([...rows, newTeacher]);
-        // Reset form fields
         setNewTeacherName('');
         setNewTeacherLastActive('');
         setNewTeacherActivityScore('');

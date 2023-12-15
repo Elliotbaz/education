@@ -39,7 +39,7 @@ const AllResources = () => {
     const handleAddNewResource = () => {
         const newResource = {
             id: rows.length + 1,
-            resource_id: rows.length + 1, // Generate a unique ID for the new resource
+            resource_id: rows.length + 1,
             resource_name: newResourceName,
             allocated_teachers: newAllocatedTeachers,
             utilization_rate: newUtilizationRate,

@@ -9,15 +9,11 @@ const TeacherActivities = ({ teacherActivities }) => {
         <div className="grid-one-item grid-common grid-c2">
             <div className="grid-c-title">
                 <h3 className="grid-c-title-text">Teacher's Recently Active</h3>
-                <button className="grid-c-title-icon">
-                    {/* Replace with an appropriate icon */}
-                </button>
             </div>
 
             <div className="grid-content">
                 <div className="grid-items">
                     {
-                        // Display only the first 3 sorted teacher activities
                         sortedActivities.slice(0, 3).map((activity) => (
                             <div key={activity.teacher_id} className="grid-item">
                                 <div className="grid-item-l">
