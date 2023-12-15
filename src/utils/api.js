@@ -18,10 +18,10 @@ export const deleteStudentProgressAPI = (id) => axios.delete(`${API_URL}/student
 
 // Resource Management
 export const getAllResourcesAPI = () => axios.get(`${API_URL}/resources`);
-export const getAllResourcesByIdAPI = (id) => axios.get(`${API_URL}/resource/${id}`);
-export const updateResourcesByIdAPI = (id, data) => axios.put(`${API_URL}/resource/${id}`, data);
-export const createResourcesAPI = (data) => axios.put(`${API_URL}/resource`, data);
-export const deleteResourcesAPI = (id) => axios.put(`${API_URL}/resource/${id}`);
+export const getAllResourcesByIdAPI = (id) => axios.get(`${API_URL}/resources/${id}`);
+export const updateResourcesByIdAPI = (id, data) => axios.put(`${API_URL}/resources/${id}`, data);
+export const createResourcesAPI = (data) => axios.post(`${API_URL}/resources`, data);
+export const deleteResourcesAPI = (id) => axios.delete(`${API_URL}/resources/${id}`);
 
 // Coaches
 export const getAllCoachesAPI = () => axios.get(`${API_URL}/coaches`);

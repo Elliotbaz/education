@@ -5,12 +5,14 @@ import { DataGrid } from '@mui/x-data-grid';
 import "../components/ContentMain/ContentMain.css";
 import ContentTop from "../components/ContentTop/ContentTop";
 import "../layout/Content/Content.css";
-import { getAllResourcesAPI, createResourcesAPI, deleteResourcesAPI } from '../utils/api'
+import { getAllResourcesAPI, createResourcesAPI, deleteResourcesAPI, getAllTeachersAPI } from '../utils/api'
+import Select from 'react-select';
 
 const AllResources = () => {
     const [newResourceName, setNewResourceName] = useState('');
     const [newUtilizationRate, setNewUtilizationRate] = useState('');
-    const [newAllocatedTeachers, setNewAllocatedTeachers] = useState('');
+    const [newAllocatedTeachers, setNewAllocatedTeachers] = useState([]);
+    const [teachersList, setTeachersList] = useState([]);
     const [rows, setRows] = useState([])
 
     useEffect(() => {
@@ -26,11 +28,21 @@ const AllResources = () => {
             .catch((error) => {
                 console.error('There was an error fetching the resources!', error);
             });
+
+        getAllTeachersAPI()
+            .then(response => {
+                setTeachersList(response.data.map(teacher => ({
+                    value: teacher._id,
+                    label: teacher.name
+                })));
+            })
+            .catch(error => console.error('Error fetching teachers', error));
+
     }, []);
 
     const columns = [
-        { field: 'resource_name', headerName: 'Resource Name', width: 200 },
-        { field: 'allocated_teachers', headerName: 'Allocated Teachers', width: 200 },
+        { field: 'resource_name', headerName: 'Resource Name', width: 300 },
+        { field: 'allocated_teachers', headerName: 'Allocated Teachers', width: 400 },
         { field: 'utilization_rate', headerName: 'Utilization Rate (%)', width: 180 },
         {
             field: 'actions',
@@ -42,22 +54,54 @@ const AllResources = () => {
         }
     ];
 
+
     const handleAddNewResource = () => {
         const newResource = {
-            id: rows.length + 1,
-            resource_id: rows.length + 1,
             resource_name: newResourceName,
-            allocated_teachers: newAllocatedTeachers,
+            allocated_teachers: newAllocatedTeachers.map(teacher => teacher.value),
             utilization_rate: newUtilizationRate,
         };
-        setRows([...rows, newResource]);
+
+        createResourcesAPI(newResource)
+            .then(() => {
+                // Fetch all resources again to update the table with correct data
+                getAllResourcesAPI()
+                    .then((response) => {
+                        setRows(response.data.map(resource => ({
+                            id: resource._id,
+                            resource_name: resource.resource_name,
+                            allocated_teachers: resource.allocated_teachers.map(teacher => teacher.name).join(', '),
+                            utilization_rate: resource.utilization_rate,
+                        })));
+                    })
+                    .catch((error) => {
+                        console.error('There was an error refetching the resources!', error);
+                    });
+            })
+            .catch((error) => {
+                console.error('Error adding new resource', error);
+            });
+
+        // Reset input fields
         setNewResourceName('');
         setNewUtilizationRate('');
-        setNewAllocatedTeachers('');
+        setNewAllocatedTeachers([]);
     };
 
+
     const removeResource = (id) => {
-        setRows(rows.filter(row => row.id !== id));
+        console.log(id)
+        deleteResourcesAPI(id)
+            .then(() => {
+                setRows(rows.filter(row => row.id !== id));
+            })
+            .catch((error) => {
+                console.error('There was an error deleting the resource!', error);
+            });
+    };
+
+    const handleSelectChange = selectedOptions => {
+        setNewAllocatedTeachers(selectedOptions);
     };
 
     return (
@@ -68,21 +112,40 @@ const AllResources = () => {
                 <div className="main-content-holder">
                     <div className="content-grid-one">
                         <div className="grid-one-item grid-common grid-c1" style={{ backgroundColor: '#fff' }}>
-                            <div>
+                            <div style={{ display: "flex" }}>
                                 <input
                                     type="text"
                                     value={newResourceName}
                                     onChange={(e) => setNewResourceName(e.target.value)}
                                     placeholder="Resource Name"
-                                    style={{ padding: 10, margin: '5px' }}
+                                    style={{ padding: 10, margin: '5px', width: '30%' }}
                                 />
-                                <input
-                                    type="text"
-                                    value={newAllocatedTeachers}
-                                    onChange={(e) => setNewAllocatedTeachers(e.target.value)}
-                                    placeholder="Allocated Teachers"
-                                    style={{ padding: 10, margin: '5px' }}
-                                />
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <Select
+                                        isMulti
+                                        value={newAllocatedTeachers}
+                                        onChange={handleSelectChange}
+                                        options={teachersList}
+                                        className="basic-multi-select"
+                                        classNamePrefix="select"
+                                        styles={{
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                color: state.isSelected ? 'white' : 'black',
+                                                backgroundColor: state.isSelected ? 'blue' : 'white',
+                                                ':hover': {
+                                                    backgroundColor: state.isSelected ? 'blue' : 'lightgray'
+                                                }
+                                            }),
+                                            control: (provided) => ({
+                                                ...provided,
+                                                width: '300px'
+                                            })
+                                        }}
+                                    />
+                                </div>
+
+
                                 <input
                                     type="number"
                                     value={newUtilizationRate}
